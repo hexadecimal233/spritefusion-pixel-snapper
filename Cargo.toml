@@ -17,3 +17,22 @@ rand_chacha = "0.3"
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wasm-bindgen = "0.2"
 getrandom = { version = "0.2", features = ["js"] }
+
+# --- Size & performance optimizations ---
+[profile.release]
+opt-level = "z"        # Aggressive size optimization
+lto = true             # Link-time optimization
+codegen-units = 1      # Single codegen unit for better inlining
+panic = "abort"        # Strip panic strings (biggest single size saver)
+strip = "symbols"      # Remove all symbol information
+
+# --- wasm-pack configuration ---
+[package.metadata.wasm-pack.profile.release]
+# wasm-opt further reduces binary size (~15-20% beyond LLVM alone)
+# --enable-bulk-memory / --enable-nontrapping-float-to-int required for Rust 1.87+ (LLVM 20)
+wasm-opt = ["-Oz", "--enable-bulk-memory", "--enable-nontrapping-float-to-int"]
+
+[package.metadata.wasm-pack.profile.release.wasm-bindgen]
+debug-js-glue = false
+demangle-name-section = true
+dwarf-debug-info = false
