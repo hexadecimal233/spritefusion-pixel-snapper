@@ -30,7 +30,9 @@ strip = "symbols"      # Remove all symbol information
 [package.metadata.wasm-pack.profile.release]
 # wasm-opt further reduces binary size (~15-20% beyond LLVM alone)
 # --enable-bulk-memory / --enable-nontrapping-float-to-int required for Rust 1.87+ (LLVM 20)
-wasm-opt = ["-Oz", "--enable-bulk-memory", "--enable-nontrapping-float-to-int"]
+# wasm-opt disabled in wasm-pack (network-unreliable download).
+# Run manually: wasm-opt -Oz --enable-bulk-memory pkg/*.wasm -o pkg/*.wasm
+wasm-opt = false
 
 [package.metadata.wasm-pack.profile.release.wasm-bindgen]
 debug-js-glue = false
